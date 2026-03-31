@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ayushh Kaurav Website</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            text-align: center;
+            font-family: Arial;
+            color: white;
+            background: linear-gradient(45deg, #000000, #1a1a1a, #333333);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            border: 2px solid gold;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px gold;
+            animation: glow 2s infinite alternate;
+        }
+
+        h1 {
+            color: gold;
+            font-size: 35px;
+            animation: fadeIn 2s ease-in-out;
+        }
+
+        p {
+            font-size: 18px;
+            animation: fadeIn 3s ease-in-out;
+        }
+
+        @keyframes glow {
+            from { box-shadow: 0 0 10px gold; }
+            to { box-shadow: 0 0 25px gold; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="box">
+        <h1>Welcome to Ayushh Kaurav Website</h1>
+        <p>Owner of website is Ayushh Kaurav</p>
+    </div>
+
+</body>
+</html>
