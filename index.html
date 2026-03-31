@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Ayushh Kaurav - Wikipedia</title>
+
+<meta name="description" content="Official website of Ayushh Kaurav, future IPS officer from Gwalior, India.">
+
+<style>
+body {
+    font-family: Arial;
+    margin: 0;
+    background: #f6f6f6;
+}
+
+/* HEADER */
+header {
+    background: white;
+    padding: 15px;
+    border-bottom: 1px solid #ccc;
+    position: sticky;
+    top: 0;
+}
+
+/* SEARCH */
+.search {
+    width: 200px;
+    padding: 5px;
+}
+
+/* LAYOUT */
+.container {
+    display: flex;
+    width: 95%;
+    margin: auto;
+}
+
+/* CONTENT */
+.content {
+    width: 70%;
+    background: white;
+    padding: 20px;
+}
+
+/* SIDEBAR */
+.sidebar {
+    width: 30%;
+    margin-left: 20px;
+}
+
+.infobox {
+    background: white;
+    padding: 15px;
+    border: 1px solid #ccc;
+    text-align: center;
+}
+
+.button {
+    display: block;
+    margin-top: 10px;
+    padding: 10px;
+    background: #e1306c;
+    color: white;
+    text-decoration: none;
+}
+
+</style>
+
+<script>
+function searchText() {
+    let input = document.getElementById("search").value.toLowerCase();
+    let content = document.body.innerHTML.toLowerCase();
+    if(content.includes(input)){
+        alert("Found on page!");
+    } else {
+        alert("Not found!");
+    }
+}
+</script>
+
+</head>
+
+<body>
+
+<header>
+    <h2>Ayushh Kaurav</h2>
+    <input type="text" id="search" class="search" placeholder="Search...">
+    <button onclick="searchText()">Search</button>
+</header>
+
+<div class="container">
+
+<div class="content">
+
+<h2>Introduction</h2>
+<p><b>Ayushh Kaurav</b> is a student and future IPS officer from Gwalior, India.</p>
+
+<h2>Early Life</h2>
+<p>Born on 12 March 2010 in Madhya Pradesh.</p>
+
+<h2>Education</h2>
+<p>Studied in multiple schools and currently in 11th class.</p>
+
+<h2>Goal</h2>
+<p>To become an IPS officer.</p>
+
+<!-- LINK TO SECOND PAGE -->
+<a href="contact.html">Go to Contact Page</a>
+
+</div>
+
+<div class="sidebar">
+<div class="infobox">
+<img src="photo.jpg" width="100%">
+<h3>Ayushh Kaurav</h3>
+
+<a href="https://www.instagram.com/ayushh_kaurav" target="_blank" class="button">
+Instagram
+</a>
+
+</div>
+</div>
+
+</div>
+
+</body>
+</html>
