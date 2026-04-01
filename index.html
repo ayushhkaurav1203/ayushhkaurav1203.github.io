@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Flappy Working FINAL</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<style>
+body { margin:0; text-align:center; background:#87CEEB; font-family:Arial; }
+
+#welcomeScreen {
+    position:fixed;
+    width:100%; height:100%;
+    background:linear-gradient(#4facfe,#00f2fe);
+    display:flex; flex-direction:column;
+    justify-content:center; align-items:center;
+}
+
+canvas {
+    display:block;
+    margin:auto;
+    background:#70c5ce;
+    width:90vw;
+    max-width:400px;
+}
+
+#restartBtn { display:none; padding:10px; }
+</style>
+</head>
+
+<body>
+
+<div id="welcomeScreen">
+    <h1>Welcome to Ayushh Kaurav</h1>
+    <p>1st Testing Game</p>
+    <button id="startBtn">Start Game</button>
+</div>
+
+<h2>🎮 Game</h2>
+<canvas id="gameCanvas"></canvas>
+<br>
+<button id="restartBtn" onclick="restartGame()">Restart</button>
+
+<script>
+let canvas = document.getElementById("gameCanvas");
+let ctx = canvas.getContext("2d");
+
+canvas.width = 360;
+canvas.height = 500;
+
+// IMAGE SAFE LOAD
+let birdImg = new Image();
+let imageLoaded = false;
+
+birdImg.onload = () => imageLoaded = true;
+birdImg.onerror = () => imageLoaded = false;
+
+birdImg.src = "https://upload.wikimedia.org/wikipedia/commons/thumb/3/32/Yellow_cartoon_bird.svg/512px-Yellow_cartoon_bird.svg.png";
+
+let bird, pipes, score, gameOver, frame;
+
+document.getElementById("startBtn").onclick = () => {
+    document.getElementById("welcomeScreen").style.display = "none";
+    init();
+    loop();
+};
+
+function init(){
+    bird = {x:80,y:200,v:0};
+    pipes=[];
+    score=0;
+    gameOver=false;
+    frame=0;
+}
+
+function jump(){ bird.v=-8; }
+
+document.addEventListener("keydown",e=>{ if(e.code==="Space") jump(); });
+canvas.addEventListener("touchstart",jump);
+
+function update(){
+    frame++;
+    bird.v+=0.5;
+    bird.y+=bird.v;
+
+    if(frame%90===0){
+        let gap=140;
+        let top=Math.random()*(canvas.height-gap-80)+40;
+
+        pipes.push({x:canvas.width,w:50,top:top,bottom:top+gap,passed:false});
+    }
+
+    pipes.forEach(p=>{
+        p.x-=2;
+
+        if(bird.x+15>p.x && bird.x-15<p.x+p.w &&
+          (bird.y-15<p.top || bird.y+15>p.bottom)){
+            gameOver=true;
+        }
+
+        if(!p.passed && p.x+p.w<bird.x){
+            score++;
+            p.passed=true;
+        }
+    });
+
+    pipes=pipes.filter(p=>p.x+p.w>0);
+
+    if(bird.y>canvas.height||bird.y<0) gameOver=true;
+}
+
+function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    // SAFE DRAW (image fail bhi ho to circle)
+    if(imageLoaded){
+        ctx.drawImage(birdImg,bird.x-15,bird.y-15,30,30);
+    } else {
+        ctx.fillStyle="yellow";
+        ctx.beginPath();
+        ctx.arc(bird.x,bird.y,12,0,Math.PI*2);
+        ctx.fill();
+    }
+
+    ctx.fillStyle="green";
+    pipes.forEach(p=>{
+        ctx.fillRect(p.x,0,p.w,p.top);
+        ctx.fillRect(p.x,p.bottom,p.w,canvas.height);
+    });
+
+    ctx.fillStyle="black";
+    ctx.fillText("Score: "+score,10,30);
+
+    if(gameOver){
+        ctx.fillStyle="red";
+        ctx.font="30px Arial";
+        ctx.fillText("GAME OVER",80,250);
+        document.getElementById("restartBtn").style.display="inline";
+    }
+}
+
+function loop(){
+    update();
+    draw();
+    if(!gameOver) requestAnimationFrame(loop);
+}
+
+function restartGame(){
+    document.getElementById("restartBtn").style.display="none";
+    init();
+    loop();
+}
+</script>
+
+</body>
+</html>
