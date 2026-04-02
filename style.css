@@ -1,0 +1,42 @@
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #70c5ce;
+  text-align: center;
+}
+
+.top-bar {
+  background: #222;
+  color: white;
+  padding: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.game-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.logo {
+  margin-top: 20px;
+  font-size: 28px;
+}
+
+.start-btn {
+  padding: 12px 25px;
+  font-size: 18px;
+  background: green;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  margin: 15px;
+}
+
+canvas {
+  background: skyblue;
+  border: 2px solid black;
+  width: 90%;
+  max-width: 350px;
+}
