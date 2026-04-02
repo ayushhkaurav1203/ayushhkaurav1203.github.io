@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flappy Game</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<div class="top-bar">
+  <span>Flappy Game</span>
+  <button onclick="openMenu()">☰</button>
+</div>
+
+<div class="game-container">
+  <h1 class="logo">FLAPPY GAME</h1>
+
+  <button id="startBtn" class="start-btn">START</button>
+
+  <!-- CANVAS ALWAYS VISIBLE -->
+  <canvas id="gameCanvas"></canvas>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
