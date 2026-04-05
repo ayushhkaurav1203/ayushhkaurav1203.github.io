@@ -1,4 +1,4 @@
-[
+
   {
     "id": "target-blitz",
     "title": "Target Blitz",
@@ -66,3 +66,9 @@
     "rating": 4.9
   }
 ]
+{
+  "id": "neon-racer-pro",
+  "title": "Neon Racer Pro 🔥",
+  "thumbnail": "https://via.placeholder.com/300x200",
+  "category": "Racing"
+}
