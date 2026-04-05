@@ -25,7 +25,6 @@ const GAMES = [
       { key: 'Combos', desc: 'Hit targets quickly for bonus' },
     ]
   },
-  ,
 {
   id: 'neon-racer-pro',
   title: 'Neon Racer Pro 🔥',
