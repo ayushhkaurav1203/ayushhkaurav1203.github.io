@@ -24,7 +24,7 @@ const GAMES = [
       { key: 'Mouse Click', desc: 'Shoot target' },
       { key: 'Combos', desc: 'Hit targets quickly for bonus' },
     ]
-  },
+  }
 {
   id: 'neon-racer-pro',
   title: 'Neon Racer Pro 🔥',
