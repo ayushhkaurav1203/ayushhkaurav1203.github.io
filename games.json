@@ -1,0 +1,68 @@
+[
+  {
+    "id": "target-blitz",
+    "title": "Target Blitz",
+    "category": "shooting",
+    "description": "Sharpen your aim in this fast-paced target shooting game! Click the glowing targets before they vanish.",
+    "thumbnail": "🎯",
+    "color": "#ff4757",
+    "tags": ["shooting", "arcade", "skill"],
+    "plays": "128K",
+    "rating": 4.7
+  },
+  {
+    "id": "hex-puzzle",
+    "title": "Hex Puzzle",
+    "category": "puzzle",
+    "description": "Match colorful hexagonal tiles to clear the board.",
+    "thumbnail": "🧩",
+    "color": "#2ed573",
+    "tags": ["puzzle", "logic"],
+    "plays": "76K",
+    "rating": 4.8
+  },
+  {
+    "id": "pixel-runner",
+    "title": "Pixel Runner",
+    "category": "arcade",
+    "description": "Endless runner game. Jump and collect coins.",
+    "thumbnail": "👾",
+    "color": "#5352ed",
+    "tags": ["arcade", "runner"],
+    "plays": "210K",
+    "rating": 4.6
+  },
+  {
+    "id": "gravity-hopper",
+    "title": "Gravity Hopper",
+    "category": "platformer",
+    "description": "Flip gravity and complete levels.",
+    "thumbnail": "🚀",
+    "color": "#eccc68",
+    "tags": ["platformer"],
+    "plays": "55K",
+    "rating": 4.4
+  },
+  {
+    "id": "cyber-clicker",
+    "title": "Cyber Clicker",
+    "category": "clicker",
+    "description": "Build your cyber empire.",
+    "thumbnail": "💻",
+    "color": "#ff6b81",
+    "tags": ["clicker"],
+    "plays": "183K",
+    "rating": 4.9
+  },
+  {
+    "id": "neon-racer-pro",
+    "title": "Neon Racer Pro 🔥",
+    "category": "racing",
+    "description": "High graphics racing game with nitro, traffic dodging and smooth controls.",
+    "thumbnail": "🏁",
+    "color": "#00f5ff",
+    "tags": ["racing", "3d", "nitro"],
+    "plays": "NEW",
+    "rating": 5.0
+  }
+]
