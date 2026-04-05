@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Cyber Clicker</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#080b14;min-height:100vh;font-family:'Exo 2',monospace;color:#e8f4fd;overflow-x:hidden}
+.layout{display:grid;grid-template-columns:1fr 260px;min-height:100vh;max-width:780px;margin:0 auto;gap:0}
+/* Left panel */
+.left{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px 20px;border-right:1px solid #1e2d40}
+.game-title{font-size:1.1rem;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:#ff6b81;text-shadow:0 0 15px rgba(255,107,129,0.5);margin-bottom:16px}
+.currency-display{text-align:center;margin-bottom:8px}
+.currency-val{font-size:2.2rem;font-weight:700;color:#00f5ff;font-family:monospace;line-height:1;text-shadow:0 0 20px rgba(0,245,255,0.4)}
+.currency-lbl{font-size:0.7rem;letter-spacing:2px;text-transform:uppercase;color:#8899aa;margin-top:2px}
+.per-sec{font-size:0.85rem;color:#2ed573;margin-bottom:20px;text-align:center}
+/* Clicker button */
+.clicker-wrap{position:relative;margin:10px 0 20px}
+#clickerBtn{width:140px;height:140px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#ff6b81aa,#ff2d78);border:3px solid #ff6b81;color:#fff;font-size:2.5rem;cursor:pointer;transition:transform 0.1s,box-shadow 0.1s;box-shadow:0 0 30px rgba(255,107,129,0.4),inset 0 0 20px rgba(0,0,0,0.3);position:relative;z-index:1}
+#clickerBtn:active{transform:scale(0.93);box-shadow:0 0 50px rgba(255,107,129,0.7)}
+#clickerBtn:hover{box-shadow:0 0 40px rgba(255,107,129,0.6),inset 0 0 20px rgba(0,0,0,0.3)}
+.click-ripple{position:absolute;border-radius:50%;border:2px solid #ff6b81;animation:ripple 0.5s ease-out forwards;pointer-events:none;z-index:0}
+@keyframes ripple{from{width:140px;height:140px;left:0;top:0;opacity:0.8}to{width:200px;height:200px;left:-30px;top:-30px;opacity:0}}
+.float-text{position:absolute;pointer-events:none;font-weight:700;color:#00f5ff;font-size:0.9rem;animation:float-up 0.8s ease forwards;z-index:5}
+@keyframes float-up{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-70px) scale(0.7)}}
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;width:100%;max-width:280px}
+.stat-box{background:#111827;border:1px solid #1e2d40;border-radius:8px;padding:10px;text-align:center}
+.stat-box .v{font-size:1rem;font-weight:700;color:#ff6b81;font-family:monospace}
+.stat-box .l{font-size:0.65rem;letter-spacing:1px;text-transform:uppercase;color:#8899aa;margin-top:2px}
+/* Prestige */
+#prestigeBtn{margin-top:16px;padding:10px 24px;background:transparent;border:1px solid #a855f7;color:#a855f7;border-radius:8px;font-size:0.8rem;font-weight:700;letter-spacing:1px;cursor:pointer;transition:0.2s;opacity:0.4;pointer-events:none}
+#prestigeBtn.ready{opacity:1;pointer-events:auto;animation:pulsePrest 1.5s ease infinite}
+#prestigeBtn.ready:hover{background:rgba(168,85,247,0.15)}
+@keyframes pulsePrest{0%,100%{box-shadow:none}50%{box-shadow:0 0 15px rgba(168,85,247,0.5)}}
+/* Right panel - upgrades */
+.right{padding:16px;overflow-y:auto;background:#0a0f1e}
+.right h3{font-size:0.7rem;letter-spacing:3px;text-transform:uppercase;color:#8899aa;margin-bottom:12px;padding-bottom:6px;border-bottom:1px solid #1e2d40}
+.upgrade-card{background:#111827;border:1px solid #1e2d40;border-radius:10px;padding:12px;margin-bottom:10px;cursor:pointer;transition:0.2s;display:flex;gap:10px;align-items:center}
+.upgrade-card:hover:not(.locked){border-color:rgba(0,245,255,0.3);transform:translateX(-2px)}
+.upgrade-card.locked{opacity:0.45;cursor:not-allowed}
+.upgrade-card.maxed{opacity:0.7;cursor:not-allowed;border-color:rgba(255,230,0,0.3)}
+.up-icon{font-size:1.5rem;width:36px;text-align:center;flex-shrink:0}
+.up-info{flex:1;min-width:0}
+.up-name{font-size:0.82rem;font-weight:700;color:#e8f4fd;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.up-desc{font-size:0.7rem;color:#8899aa;margin-top:2px}
+.up-cost{font-size:0.75rem;font-weight:700;color:#00f5ff;margin-top:4px;font-family:monospace}
+.up-cost.cant{color:#4a5568}
+.up-lvl{font-size:0.65rem;color:#ffe600;text-align:right;flex-shrink:0}
+/* Progress bar */
+.up-progress{height:3px;background:#1e2d40;border-radius:2px;margin-top:6px;overflow:hidden}
+.up-progress-fill{height:100%;background:linear-gradient(90deg,#00f5ff,#a855f7);border-radius:2px;transition:width 0.3s}
+@media(max-width:520px){.layout{grid-template-columns:1fr}.right{border-top:1px solid #1e2d40}.left{border-right:none;padding:16px}}
+</style>
+</head>
+<body>
+<div class="layout">
+  <!-- LEFT -->
+  <div class="left">
+    <div class="game-title">💻 Cyber Clicker</div>
+    <div class="currency-display">
+      <div class="currency-val" id="credEl">0</div>
+      <div class="currency-lbl">Credits</div>
+    </div>
+    <div class="per-sec" id="cpsEl">+0 credits/sec</div>
+
+    <div class="clicker-wrap" id="clickerWrap">
+      <button id="clickerBtn">💻</button>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-box"><div class="v" id="totalClicksEl">0</div><div class="l">Total Clicks</div></div>
+      <div class="stat-box"><div class="v" id="clickPowerEl">1</div><div class="l">Per Click</div></div>
+      <div class="stat-box"><div class="v" id="prestigeEl">0</div><div class="l">Prestige</div></div>
+      <div class="stat-box"><div class="v" id="totalEarnedEl">0</div><div class="l">All Time</div></div>
+    </div>
+
+    <button id="prestigeBtn">✨ Prestige (10M cred)</button>
+  </div>
+
+  <!-- RIGHT -->
+  <div class="right">
+    <h3>Upgrades</h3>
+    <div id="upgradesContainer"></div>
+  </div>
+</div>
+
+<script>
+/* ── Game State ── */
+let credits=0,cps=0,clickPower=1,totalClicks=0,allTimeEarned=0,prestige=0;
+let lastTime=Date.now();
+
+/* ── Upgrades config ── */
+const UPGRADES=[
+  {id:'cursor',name:'Auto Cursor',icon:'🖱️',desc:'Auto-clicks every second',baseCost:15,baseCps:0.1,baseCpc:0,maxLvl:50,lvl:0},
+  {id:'script',name:'Bot Script',icon:'🤖',desc:'Runs automated scripts',baseCost:100,baseCps:0.5,baseCpc:0,maxLvl:40,lvl:0},
+  {id:'mine',name:'Crypto Miner',icon:'⛏️',desc:'Mines passive credits',baseCost:500,baseCps:2,baseCpc:0,maxLvl:30,lvl:0},
+  {id:'clickpow',name:'Click Booster',icon:'⚡',desc:'+2 credits per click',baseCost:200,baseCps:0,baseCpc:2,maxLvl:50,lvl:0},
+  {id:'server',name:'Server Farm',icon:'🖥️',desc:'Massive passive income',baseCost:3000,baseCps:10,baseCpc:0,maxLvl:20,lvl:0},
+  {id:'ai',name:'AI Assistant',icon:'🧠',desc:'Exponential gains',baseCost:15000,baseCps:50,baseCpc:0,maxLvl:15,lvl:0},
+  {id:'quantum',name:'Quantum Core',icon:'⚛️',desc:'Near-infinite processing',baseCost:100000,baseCps:300,baseCpc:0,maxLvl:10,lvl:0},
+  {id:'megaclick',name:'Mega Click',icon:'💥',desc:'+20 per click',baseCost:10000,baseCps:0,baseCpc:20,maxLvl:20,lvl:0},
+];
+
+function upgradeCost(u){return Math.floor(u.baseCost*Math.pow(1.18,u.lvl));}
+
+function recalcStats(){
+  cps=0;clickPower=1;
+  UPGRADES.forEach(u=>{
+    cps+=u.baseCps*u.lvl;
+    clickPower+=u.baseCpc*u.lvl;
+  });
+  cps*=(1+prestige*0.5);
+  clickPower*=(1+prestige*0.3);
+}
+
+function fmtNum(n){
+  if(n>=1e9) return (n/1e9).toFixed(2)+'B';
+  if(n>=1e6) return (n/1e6).toFixed(2)+'M';
+  if(n>=1e3) return (n/1e3).toFixed(1)+'K';
+  return Math.floor(n).toString();
+}
+
+/* ── Render upgrades ── */
+function renderUpgrades(){
+  const c=document.getElementById('upgradesContainer');
+  c.innerHTML='';
+  UPGRADES.forEach((u,i)=>{
+    const cost=upgradeCost(u);
+    const canAfford=credits>=cost;
+    const maxed=u.lvl>=u.maxLvl;
+    const card=document.createElement('div');
+    card.className='upgrade-card'+(maxed?' maxed':(!canAfford&&u.lvl===0?' locked':''));
+    const pct=Math.min(100,(u.lvl/u.maxLvl)*100);
+    card.innerHTML=`
+      <div class="up-icon">${u.icon}</div>
+      <div class="up-info">
+        <div class="up-name">${u.name}</div>
+        <div class="up-desc">${u.desc}</div>
+        <div class="up-cost ${canAfford||maxed?'':'cant'}">${maxed?'MAX':'💰 '+fmtNum(cost)}</div>
+        <div class="up-progress"><div class="up-progress-fill" style="width:${pct}%"></div></div>
+      </div>
+      <div class="up-lvl">Lvl ${u.lvl}<br><span style="color:#8899aa;font-size:0.6rem">/${u.maxLvl}</span></div>`;
+    if(!maxed){
+      card.addEventListener('click',()=>{
+        if(credits>=cost){credits-=cost;u.lvl++;recalcStats();renderUpgrades();updateUI();}
+      });
+    }
+    card.style.animationDelay=i*0.05+'s';
+    c.appendChild(card);
+  });
+}
+
+/* ── Click handler ── */
+const clickerBtn=document.getElementById('clickerBtn');
+const clickerWrap=document.getElementById('clickerWrap');
+
+clickerBtn.addEventListener('click',e=>{
+  const gained=clickPower;
+  credits+=gained;allTimeEarned+=gained;totalClicks++;
+  // Floating text
+  const ft=document.createElement('div');
+  ft.className='float-text';
+  ft.textContent='+'+fmtNum(gained);
+  const rect=clickerWrap.getBoundingClientRect();
+  const wr=clickerWrap.getBoundingClientRect();
+  ft.style.left=(Math.random()*60+40)+'px';
+  ft.style.top='50px';
+  clickerWrap.style.position='relative';
+  clickerWrap.appendChild(ft);
+  setTimeout(()=>ft.remove(),800);
+  // Ripple
+  const rp=document.createElement('div');rp.className='click-ripple';
+  clickerWrap.appendChild(rp);setTimeout(()=>rp.remove(),500);
+  updateUI();
+});
+
+/* ── Prestige ── */
+const prestigeBtn=document.getElementById('prestigeBtn');
+prestigeBtn.addEventListener('click',()=>{
+  if(credits<10000000) return;
+  prestige++;credits=0;allTimeEarned=0;totalClicks=0;
+  UPGRADES.forEach(u=>u.lvl=0);
+  recalcStats();renderUpgrades();updateUI();
+  document.body.style.background='#1a0a2e';
+  setTimeout(()=>document.body.style.background='#080b14',600);
+});
+
+/* ── Game loop ── */
+function gameLoop(){
+  const now=Date.now();
+  const dt=(now-lastTime)/1000;
+  lastTime=now;
+  const passive=cps*dt;
+  credits+=passive;allTimeEarned+=passive;
+  updateUI();
+  requestAnimationFrame(gameLoop);
+}
+
+function updateUI(){
+  document.getElementById('credEl').textContent=fmtNum(credits);
+  document.getElementById('cpsEl').textContent='+'+fmtNum(cps)+' credits/sec';
+  document.getElementById('totalClicksEl').textContent=fmtNum(totalClicks);
+  document.getElementById('clickPowerEl').textContent=fmtNum(clickPower);
+  document.getElementById('prestigeEl').textContent=prestige;
+  document.getElementById('totalEarnedEl').textContent=fmtNum(allTimeEarned);
+  // Update upgrade affordability highlighting
+  document.querySelectorAll('.upgrade-card:not(.maxed)').forEach((card,i)=>{
+    const u=UPGRADES[i];
+    const cost=upgradeCost(u);
+    card.classList.toggle('locked',credits<cost&&u.lvl===0);
+    const costEl=card.querySelector('.up-cost');
+    if(costEl&&!card.classList.contains('maxed')){
+      costEl.className='up-cost'+(credits>=cost?'':' cant');
+    }
+  });
+  // Prestige button
+  prestigeBtn.classList.toggle('ready',credits>=10000000);
+}
+
+recalcStats();
+renderUpgrades();
+lastTime=Date.now();
+gameLoop();
+</script>
+</body>
+</html>
