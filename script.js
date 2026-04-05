@@ -26,8 +26,8 @@ const GAMES = [
     ]
   },
   {
-    id: 'neon-racer',
-    title: 'Neon Racer',
+    id: 'neon-racer-pro',
+    title: 'Neon Racer Pro 🔥', 
     category: 'racing',
     description: 'Tear through a neon highway at breakneck speed! Dodge oncoming traffic, collect boost pads, and survive as long as possible.',
     thumbnail: '🏎️',
