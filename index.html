@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeonArcade — Play Free Games Online</title>
+  <meta name="description" content="Play the best free browser games online. Action, racing, puzzle, shooting and more!" />
+  <link rel="stylesheet" href="style.css" />
+  <!-- Favicon emoji via SVG -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════ -->
+  <nav class="navbar">
+    <!-- Logo -->
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">🎮</span>
+      <span>Neon<span style="color:var(--neon-pink)">Arcade</span></span>
+    </a>
+
+    <!-- Category links -->
+    <ul class="nav-links" id="navLinks">
+      <li><a href="#" class="nav-link active" data-cat="all">All Games</a></li>
+      <li><a href="#" class="nav-link" data-cat="action">Action</a></li>
+      <li><a href="#" class="nav-link" data-cat="racing">Racing</a></li>
+      <li><a href="#" class="nav-link" data-cat="shooting">Shooting</a></li>
+      <li><a href="#" class="nav-link" data-cat="puzzle">Puzzle</a></li>
+      <li><a href="#" class="nav-link" data-cat="arcade">Arcade</a></li>
+      <li><a href="#" class="nav-link" data-cat="platformer">Platformer</a></li>
+      <li><a href="#" class="nav-link" data-cat="clicker">Clicker</a></li>
+    </ul>
+
+    <!-- Desktop search -->
+    <div class="nav-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Search games…" autocomplete="off" />
+    </div>
+
+    <!-- Hamburger for mobile -->
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="#" class="nav-link active" data-cat="all">All Games</a>
+    <a href="#" class="nav-link" data-cat="action">Action</a>
+    <a href="#" class="nav-link" data-cat="racing">Racing</a>
+    <a href="#" class="nav-link" data-cat="shooting">Shooting</a>
+    <a href="#" class="nav-link" data-cat="puzzle">Puzzle</a>
+    <a href="#" class="nav-link" data-cat="arcade">Arcade</a>
+    <a href="#" class="nav-link" data-cat="platformer">Platformer</a>
+    <a href="#" class="nav-link" data-cat="clicker">Clicker</a>
+    <div class="mobile-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="mobileSearchInput" placeholder="Search games…" autocomplete="off" />
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       HERO
+  ══════════════════════════════════════════ -->
+  <section class="hero">
+    <h1><span class="cyan">Neon</span><span class="pink">Arcade</span></h1>
+    <p>100% free browser games. No downloads, no installs — just instant fun.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><span class="val">6+</span><span class="lbl">Games</span></div>
+      <div class="hero-stat"><span class="val">750K+</span><span class="lbl">Plays</span></div>
+      <div class="hero-stat"><span class="val">6</span><span class="lbl">Categories</span></div>
+      <div class="hero-stat"><span class="val">4.7★</span><span class="lbl">Avg Rating</span></div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════════
+       MAIN CONTENT
+  ══════════════════════════════════════════ -->
+  <main class="container">
+
+    <!-- Search results notice (hidden by default) -->
+    <div class="section">
+      <div class="search-notice" id="searchNotice" style="display:none">
+        <p>Showing results for: <span id="searchTerm"></span></p>
+        <button id="clearSearch">✕ Clear</button>
+      </div>
+
+      <!-- Category filter pills -->
+      <div class="filter-pills" id="filterPills">
+        <button class="pill active" data-cat="all">🎮 All</button>
+        <button class="pill" data-cat="shooting">🎯 Shooting</button>
+        <button class="pill" data-cat="racing">🏎️ Racing</button>
+        <button class="pill" data-cat="puzzle">🧩 Puzzle</button>
+        <button class="pill" data-cat="arcade">👾 Arcade</button>
+        <button class="pill" data-cat="platformer">🚀 Platformer</button>
+        <button class="pill" data-cat="clicker">💻 Clicker</button>
+      </div>
+
+      <!-- Section header -->
+      <div class="section-header">
+        <h2 class="section-title" id="sectionTitle">All Games</h2>
+        <span id="gameCount" style="font-size:0.8rem;color:var(--text-muted)"></span>
+      </div>
+
+      <!-- Games grid — populated by JS -->
+      <div class="games-grid" id="gamesGrid"></div>
+
+      <!-- No results state -->
+      <div class="no-results" id="noResults" style="display:none">
+        <div class="icon">🔍</div>
+        <h3>No games found</h3>
+        <p>Try a different search or category</p>
+      </div>
+    </div>
+
+    <!-- ── LEADERBOARD ── -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">🏆 Top Players</h2>
+        <a href="#" class="section-link">View All →</a>
+      </div>
+      <div class="leaderboard" id="leaderboard">
+        <div class="leaderboard-header">
+          <span>Rank</span>
+          <span>Player</span>
+          <span>Score</span>
+          <span>Change</span>
+        </div>
+        <!-- Populated by JS -->
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ══════════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════════ -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-top">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <span class="logo-icon">🎮</span>
+            <span>Neon<span style="color:var(--neon-pink)">Arcade</span></span>
+          </a>
+          <p>The best free browser gaming platform. Play hundreds of games instantly — no downloads required.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Games</h4>
+          <ul>
+            <li><a href="#">Action</a></li>
+            <li><a href="#">Racing</a></li>
+            <li><a href="#">Shooting</a></li>
+            <li><a href="#">Puzzle</a></li>
+            <li><a href="#">Arcade</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Company</h4>
+          <ul>
+            <li><a href="#">About Us</a></li>
+            <li><a href="#">Contact</a></li>
+            <li><a href="#">Careers</a></li>
+            <li><a href="#">Blog</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Service</a></li>
+            <li><a href="#">Cookie Policy</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>© 2025 <span class="cyan">NeonArcade</span>. All rights reserved.</p>
+        <div class="social-links">
+          <a href="#" class="social-link" aria-label="Twitter">𝕏</a>
+          <a href="#" class="social-link" aria-label="Discord">💬</a>
+          <a href="#" class="social-link" aria-label="YouTube">▶</a>
+          <a href="#" class="social-link" aria-label="Instagram">📸</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+  </html>
