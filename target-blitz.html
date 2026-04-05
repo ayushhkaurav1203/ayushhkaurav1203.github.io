@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Target Blitz</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{background:#080b14;display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;font-family:'Exo 2',sans-serif;overflow:hidden;user-select:none}
+  #arena{position:relative;width:min(640px,100vw);height:min(480px,70vh);background:radial-gradient(ellipse at center,#0d1a2e 0%,#050810 100%);border:1px solid rgba(0,245,255,0.2);border-radius:12px;overflow:hidden;cursor:crosshair}
+  #arena::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(0,245,255,0.03)1px,transparent 1px),linear-gradient(90deg,rgba(0,245,255,0.03)1px,transparent 1px);background-size:30px 30px}
+  .hud{width:min(640px,100vw);display:flex;justify-content:space-between;align-items:center;padding:10px 0;margin-bottom:8px}
+  .hud-box{background:#111827;border:1px solid #1e2d40;border-radius:8px;padding:8px 16px;text-align:center}
+  .hud-label{font-size:0.65rem;letter-spacing:2px;text-transform:uppercase;color:#8899aa}
+  .hud-value{font-size:1.3rem;font-weight:700;color:#00f5ff;font-family:monospace}
+  .hud-value.pink{color:#ff2d78}
+  .hud-value.yellow{color:#ffe600}
+  .target{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:crosshair;transition:transform 0.1s;animation:pop-in 0.15s ease}
+  @keyframes pop-in{from{transform:scale(0)}to{transform:scale(1)}}
+  .target.shrink{animation:shrink-out 0.15s ease forwards}
+  @keyframes shrink-out{to{transform:scale(0);opacity:0}}
+  .target-inner{border-radius:50%;width:40%;height:40%;background:rgba(255,255,255,0.9)}
+  .hit-text{position:absolute;font-size:1rem;font-weight:700;pointer-events:none;animation:float-up 0.7s ease forwards}
+  @keyframes float-up{from{opacity:1;transform:translateY(0)}to{opacity:0;transform:translateY(-50px)}}
+  #overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(8,11,20,0.92);border-radius:12px;z-index:10}
+  #overlay h2{font-size:2rem;font-weight:900;letter-spacing:3px;text-transform:uppercase;color:#00f5ff;text-shadow:0 0 20px rgba(0,245,255,0.5);margin-bottom:8px}
+  #overlay p{color:#8899aa;margin-bottom:4px;font-size:0.9rem}
+  #overlay .final-score{font-size:2.5rem;font-weight:700;color:#ffe600;margin:12px 0}
+  #startBtn{margin-top:16px;padding:12px 32px;background:#00f5ff;color:#080b14;border:none;border-radius:8px;font-size:1rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:0.2s}
+  #startBtn:hover{transform:scale(1.05);box-shadow:0 0 20px rgba(0,245,255,0.5)}
+  .combo-display{position:absolute;top:10px;right:10px;font-size:0.85rem;font-weight:700;color:#ff2d78;font-family:monospace;text-shadow:0 0 10px rgba(255,45,120,0.5);opacity:0;transition:opacity 0.3s}
+  .miss-flash{position:absolute;inset:0;border:3px solid #ff2d78;border-radius:12px;pointer-events:none;opacity:0;transition:opacity 0.1s}
+</style>
+</head>
+<body>
+<div class="hud">
+  <div class="hud-box"><div class="hud-label">Score</div><div class="hud-value" id="scoreDisplay">0</div></div>
+  <div class="hud-box"><div class="hud-label">Time</div><div class="hud-value pink" id="timerDisplay">30</div></div>
+  <div class="hud-box"><div class="hud-label">Combo</div><div class="hud-value yellow" id="comboDisplay">x1</div></div>
+  <div class="hud-box"><div class="hud-label">Hits</div><div class="hud-value" id="hitsDisplay">0</div></div>
+</div>
+<div id="arena">
+  <div class="combo-display" id="comboAnim"></div>
+  <div class="miss-flash" id="missFlash"></div>
+  <div id="overlay">
+    <h2 id="overlayTitle">Target Blitz</h2>
+    <p id="overlayMsg">Click targets as fast as you can!</p>
+    <p id="overlayMsg2" style="color:#ffe600;font-size:1rem;font-weight:700">30 seconds on the clock</p>
+    <div class="final-score" id="finalScore" style="display:none"></div>
+    <button id="startBtn">▶ Start Game</button>
+  </div>
+</div>
+<script>
+const arena=document.getElementById('arena');
+const overlay=document.getElementById('overlay');
+const startBtn=document.getElementById('startBtn');
+const scoreEl=document.getElementById('scoreDisplay');
+const timerEl=document.getElementById('timerDisplay');
+const comboEl=document.getElementById('comboDisplay');
+const hitsEl=document.getElementById('hitsDisplay');
+const comboAnim=document.getElementById('comboAnim');
+const missFlash=document.getElementById('missFlash');
+const finalScore=document.getElementById('finalScore');
+
+let score=0,combo=1,hits=0,timeLeft=30,gameActive=false;
+let spawnInterval,countdownInterval,targets=[];
+
+const COLORS=[
+  {bg:'#ff4757',glow:'rgba(255,71,87,0.6)',pts:10},
+  {bg:'#00f5ff',glow:'rgba(0,245,255,0.6)',pts:15},
+  {bg:'#ffa502',glow:'rgba(255,165,2,0.6)',pts:20},
+  {bg:'#2ed573',glow:'rgba(46,213,115,0.6)',pts:25},
+  {bg:'#a855f7',glow:'rgba(168,85,247,0.6)',pts:30},
+];
+
+function startGame(){
+  score=0;combo=1;hits=0;timeLeft=30;
+  scoreEl.textContent='0';timerEl.textContent='30';comboEl.textContent='x1';hitsEl.textContent='0';
+  targets.forEach(t=>t.remove());targets=[];
+  overlay.style.display='none';
+  gameActive=true;
+  // Spawn targets
+  spawnInterval=setInterval(spawnTarget,700);
+  spawnTarget();spawnTarget();
+  // Countdown
+  countdownInterval=setInterval(()=>{
+    timeLeft--;
+    timerEl.textContent=timeLeft;
+    if(timeLeft<=10) timerEl.style.color='#ff4757';
+    if(timeLeft<=0){endGame();}
+  },1000);
+  // Miss detection
+  arena.addEventListener('click',handleMiss);
+}
+
+function spawnTarget(){
+  if(!gameActive) return;
+  const col=COLORS[Math.floor(Math.random()*COLORS.length)];
+  const size=Math.floor(Math.random()*40)+35; // 35-75px
+  const el=document.createElement('div');
+  el.className='target';
+  const maxX=arena.clientWidth-size-10;
+  const maxY=arena.clientHeight-size-10;
+  const x=Math.random()*maxX+5;
+  const y=Math.random()*maxY+5;
+  el.style.cssText=`width:${size}px;height:${size}px;left:${x}px;top:${y}px;background:radial-gradient(circle at 35% 35%,${col.bg}cc,${col.bg}88);box-shadow:0 0 15px ${col.glow},inset 0 0 10px rgba(255,255,255,0.2);border:2px solid ${col.bg}`;
+  const inner=document.createElement('div');
+  inner.className='target-inner';
+  el.appendChild(inner);
+  el.dataset.pts=col.pts;
+  el.addEventListener('click',e=>{e.stopPropagation();hitTarget(el,col,x,y,size);});
+  arena.appendChild(el);
+  targets.push(el);
+  // Auto-remove after lifespan
+  const life=Math.random()*1500+1000;
+  setTimeout(()=>{
+    if(el.parentNode&&gameActive){
+      el.classList.add('shrink');
+      setTimeout(()=>el.remove(),150);
+      targets=targets.filter(t=>t!==el);
+      // Miss penalty
+      combo=1;comboEl.textContent='x1';
+    }
+  },life);
+}
+
+function hitTarget(el,col,x,y,size){
+  if(!gameActive) return;
+  el.classList.add('shrink');
+  setTimeout(()=>el.remove(),150);
+  targets=targets.filter(t=>t!==el);
+  // Score
+  const pts=parseInt(el.dataset.pts)*combo;
+  score+=pts;hits++;
+  combo=Math.min(combo+1,8);
+  scoreEl.textContent=score;
+  hitsEl.textContent=hits;
+  comboEl.textContent='x'+combo;
+  // Floating text
+  const ft=document.createElement('div');
+  ft.className='hit-text';
+  ft.textContent='+'+pts;
+  ft.style.cssText=`left:${x+size/2}px;top:${y}px;color:${col.bg};text-shadow:0 0 8px ${col.bg}`;
+  arena.appendChild(ft);
+  setTimeout(()=>ft.remove(),700);
+  // Combo anim
+  if(combo>2){
+    comboAnim.textContent='COMBO x'+combo+'!';
+    comboAnim.style.opacity='1';
+    setTimeout(()=>comboAnim.style.opacity='0',600);
+  }
+}
+
+function handleMiss(e){
+  if(e.target===arena){
+    combo=1;comboEl.textContent='x1';
+    missFlash.style.opacity='1';
+    setTimeout(()=>missFlash.style.opacity='0',150);
+  }
+}
+
+function endGame(){
+  gameActive=false;
+  clearInterval(spawnInterval);
+  clearInterval(countdownInterval);
+  targets.forEach(t=>t.remove());targets=[];
+  arena.removeEventListener('click',handleMiss);
+  // Show overlay
+  document.getElementById('overlayTitle').textContent='Game Over!';
+  document.getElementById('overlayMsg').textContent='Your final score:';
+  document.getElementById('overlayMsg2').textContent=`Hits: ${hits} | Best Combo: ${combo}x`;
+  finalScore.style.display='block';
+  finalScore.textContent=score.toLocaleString();
+  startBtn.textContent='▶ Play Again';
+  overlay.style.display='flex';
+  timerEl.style.color='#ff2d78';
+}
+
+startBtn.addEventListener('click',startGame);
+</script>
+</body>
+</html>
