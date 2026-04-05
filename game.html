@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeonArcade — Play Game</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>" />
+</head>
+<body>
+
+  <!-- Loading overlay -->
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="loading-spinner"></div>
+    <p class="loading-text">Loading Game…</p>
+    <div class="loading-bar-wrap">
+      <div class="loading-bar" id="loadingBar"></div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       NAVBAR
+  ══════════════════════════════════════════ -->
+  <nav class="navbar">
+    <a href="index.html" class="nav-logo">
+      <span class="logo-icon">🎮</span>
+      <span>Neon<span style="color:var(--neon-pink)">Arcade</span></span>
+    </a>
+    <ul class="nav-links">
+      <li><a href="index.html?cat=all"     class="nav-link">All Games</a></li>
+      <li><a href="index.html?cat=action"   class="nav-link">Action</a></li>
+      <li><a href="index.html?cat=racing"   class="nav-link">Racing</a></li>
+      <li><a href="index.html?cat=shooting" class="nav-link">Shooting</a></li>
+      <li><a href="index.html?cat=puzzle"   class="nav-link">Puzzle</a></li>
+      <li><a href="index.html?cat=arcade"   class="nav-link">Arcade</a></li>
+    </ul>
+    <div class="nav-search">
+      <span class="search-icon">🔍</span>
+      <input type="text" placeholder="Search games…" onkeydown="if(event.key==='Enter') window.location.href='index.html?q='+this.value" />
+    </div>
+    <button class="nav-hamburger" id="hamburger" aria-label="Toggle menu">
+      <span></span><span></span><span></span>
+    </button>
+  </nav>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="index.html" class="nav-link">🏠 Home</a>
+    <a href="index.html?cat=shooting" class="nav-link">🎯 Shooting</a>
+    <a href="index.html?cat=racing" class="nav-link">🏎️ Racing</a>
+    <a href="index.html?cat=puzzle" class="nav-link">🧩 Puzzle</a>
+    <a href="index.html?cat=arcade" class="nav-link">👾 Arcade</a>
+  </div>
+
+  <!-- ══════════════════════════════════════════
+       GAME PAGE
+  ══════════════════════════════════════════ -->
+  <div class="game-page-wrap">
+
+    <!-- Header: title + actions -->
+    <div class="game-page-header">
+      <div>
+        <h1 class="game-page-title" id="gameTitle">Loading…</h1>
+        <div class="game-page-meta" id="gameMeta"></div>
+      </div>
+      <div class="game-page-actions">
+        <button class="btn-back" onclick="history.back()">← Back</button>
+        <button class="btn-fullscreen" id="fullscreenBtn">⛶ Fullscreen</button>
+      </div>
+    </div>
+
+    <!-- Game iframe -->
+    <div class="game-frame-container" id="gameFrameContainer">
+      <iframe
+        id="gameIframe"
+        title="Game"
+        allowfullscreen
+        allow="autoplay; fullscreen"
+        scrolling="no"
+      ></iframe>
+    </div>
+
+    <!-- Description + controls -->
+    <div class="game-desc-section">
+      <div class="game-description">
+        <h3>About This Game</h3>
+        <p id="gameDesc">Loading…</p>
+      </div>
+      <div class="game-controls" id="gameControls">
+        <h3>Controls</h3>
+        <!-- Populated by JS per game -->
+      </div>
+    </div>
+
+    <!-- Related games -->
+    <div style="margin-top:32px">
+      <div class="section-header">
+        <h2 class="section-title">More Games</h2>
+        <a href="index.html" class="section-link">All Games →</a>
+      </div>
+      <div class="games-grid" id="relatedGames" style="grid-template-columns:repeat(auto-fill,minmax(200px,1fr))"></div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-bottom">
+        <p>© 2025 <span class="cyan">NeonArcade</span>. All rights reserved.</p>
+        <div class="social-links">
+          <a href="#" class="social-link">𝕏</a>
+          <a href="#" class="social-link">💬</a>
+          <a href="#" class="social-link">▶</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="game-page.js"></script>
+</body>
+</html>
