@@ -25,20 +25,23 @@ const GAMES = [
       { key: 'Combos', desc: 'Hit targets quickly for bonus' },
     ]
   },
-  {
-    id: 'neon-racer',
-    title: 'Neon Racer',
-    category: 'racing',
-    description: 'Tear through a neon highway at breakneck speed! Dodge oncoming traffic, collect boost pads, and survive as long as possible.',
-    thumbnail: '🏎️',
-    color: '#ffa502',
-    tags: ['racing', 'endless', 'speed'],
-    plays: '94K',
-    rating: 4.5,
-    controls: [
-      { key: '← → / A D', desc: 'Steer left/right' },
-      { key: '⚡ Orbs', desc: 'Collect for speed boost' },
-    ]
+  ,
+{
+  id: 'neon-racer-pro',
+  title: 'Neon Racer Pro 🔥',
+  category: 'racing',
+  description: 'High graphics racing game with nitro and smooth controls.',
+  thumbnail: '🏁',
+  color: '#00f5ff',
+  tags: ['racing', '3d', 'nitro'],
+  plays: 'NEW',
+  rating: 5.0,
+  controls: [
+    { key: 'W / ↑', desc: 'Accelerate' },
+    { key: 'A D / ← →', desc: 'Steer' },
+    { key: 'SHIFT', desc: 'Nitro boost' }
+  ]
+}
   },
   {
     id: 'hex-puzzle',
