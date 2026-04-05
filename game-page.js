@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Load game iframe
   const iframe = document.getElementById('gameIframe');
-  iframe.src = `games/${game.id}.html`;
+  iframe.src = game.id + ".html";
 
   // Hide loading after iframe loads
   iframe.addEventListener('load', () => {
